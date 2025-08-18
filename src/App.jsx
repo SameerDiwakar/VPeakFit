@@ -20,25 +20,28 @@ function App() {
   return (
     <>
       <Navbar />
+      <main className="max-w-screen-xl mx-auto px-4 md:px-6">
+        <div className="space-y-10 md:space-y-16 py-6 md:py-10">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            {/* <Route path="/forgotpassword" element={<ForgotPassword />} /> */}
+          </Routes>
 
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/forgotpassword" element={<ForgotPassword />} /> */}
-        </Routes>
-      </div>
-      <Popup />
+          <Popup />
 
-      <Chatbot />
-      <Services />
-      <Routes>
-        <Route path="/diet" element={<Diet />} />
-        <Route path="/posture" element={<Posture />} />
-        <Route path="/injury" element={<UserInjuryInput />} />
-        <Route path="/userexercise" element={<UserExercise />} />
-      </Routes>
+          <Chatbot />
+          <Services />
+
+          <Routes>
+            <Route path="/diet" element={<Diet />} />
+            <Route path="/posture" element={<Posture />} />
+            <Route path="/injury" element={<UserInjuryInput />} />
+            <Route path="/userexercise" element={<UserExercise />} />
+          </Routes>
+        </div>
+      </main>
       <Footer />
     </>
   );

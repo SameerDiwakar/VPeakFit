@@ -1,158 +1,124 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import "./panel.css";
 
 const Panel = () => {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
 
   const handleEdit = (e, id) => {
-    let t = todos.filter((i) => i.id === id);
-    setTodo(t[0].todo);
-    let newTodos = todos.filter((item) => {
-      return item.id !== id;
-    });
+    let t = todos.find((i) => i.id === id);
+    setTodo(t.todo);
+    let newTodos = todos.filter((item) => item.id !== id);
     setTodos(newTodos);
   };
 
   const handleChange = (e) => {
     setTodo(e.target.value);
   };
+
   const handleDelete = (e, id) => {
-    let newTodos = todos.filter((item) => {
-      return item.id !== id;
-    });
+    let newTodos = todos.filter((item) => item.id !== id);
     setTodos(newTodos);
   };
 
   const handleAdd = () => {
-    setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }]);
-    setTodo("");
+    if (todo.trim()) {
+      setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }]);
+      setTodo("");
+    }
   };
 
-  const handleCheckbox = (e) => {
-    let id = e.target.name;
-    let index = todos.findIndex((item) => {
-      return item.id === id;
-    });
-    let newTodos = [...todos];
-    newTodos[index].isCompleted = !newTodos[index].isCompleted;
+  const handleCheckbox = (id) => {
+    let newTodos = todos.map(item => 
+      item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
+    );
     setTodos(newTodos);
   };
 
   return (
-    <>
-      <div className="panel_container">
-        {/* daily goals here */}
-
-        <div
-          className="p-1 m-2 w-1/2 border-2 min-h-[60vh]  border-blue-600 rounded-m daily_goal"
-          id="daily_goal"
-        >
-          <div className="title flex gap-2 items-center">
-            <h1 className="font-bold text-3xl text-blue-500 my-2 mx-1 p-2">
-              Daily Goals
-            </h1>
-            <i class="fa-solid fa-fire font-bold text-3xl text-blue-500 my-2 p-1"></i>
+    <section className="bg-neutral-100 py-16 sm:py-24">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        
+        {/* Daily Goals Card */}
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+          <div className="flex items-center gap-4 mb-6">
+            <i className="fa-solid fa-fire text-3xl text-primary-500"></i>
+            <h2 className="font-bold text-2xl sm:text-3xl text-neutral-800">Daily Goals</h2>
           </div>
-          <hr />
-          <br />
-          <div className="daily-txt w-full mx-2 p-2">
-            <div className="exercise font-bold text-lg">Schedule: </div>
-            <div className="calories font-bold text-lg">Calories Burned: </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-4 bg-neutral-50 rounded-lg">
+              <span className="font-semibold text-neutral-700">Workout Schedule</span>
+              <span className="font-bold text-primary-600">5:00 PM</span>
+            </div>
+            <div className="flex justify-between items-center p-4 bg-neutral-50 rounded-lg">
+              <span className="font-semibold text-neutral-700">Calories Burned</span>
+              <span className="font-bold text-primary-600">350 kcal</span>
+            </div>
           </div>
         </div>
 
-        {/* todo from here */}
-
-        <div
-          className="container my-6 rounded-md p-4 pl-7 border-2 border-blue-600 min-h-[60vh] w-1/2 todo_list"
-          id="todo_list"
-        >
-          <div className="title flex gap-3 items-center mb-2">
-            <i class="fa-solid fa-list font-bold text-3xl text-blue-500 my-2 p-1"></i>
-            <h1 className="font-bold text-3xl text-blue-500 my-2 ">
-              To Do List
-            </h1>
+        {/* To-Do List Card */}
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+          <div className="flex items-center gap-4 mb-6">
+            <i className="fa-solid fa-list-check text-3xl text-primary-500"></i>
+            <h2 className="font-bold text-2xl sm:text-3xl text-neutral-800">To-Do List</h2>
           </div>
-          <hr />
-          <br />
-          <div className="addTodo">
-            <h1 className="font-bold text-xl">Add To Do Here</h1>
-            <br />
+          
+          <div className="flex gap-2 mb-6">
             <input
               type="text"
               onChange={handleChange}
               value={todo}
-              className="w-1/2 px-1 outline-none my-5 border-blue-500 border-2"
+              placeholder="Add a new task..."
+              className="flex-grow px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             />
             <button
               onClick={handleAdd}
-              className="bg-blue-500 hover:bg-blue-700 p-2 font-bold text-sm py-1 mx-6 text-white rounded-md save_btn"
-              id="save_btn"
+              className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg transition shadow-sm disabled:bg-primary-300"
+              disabled={!todo.trim()}
             >
-              Save
+              Add
             </button>
           </div>
-          <br />
-          <h2 className="text-xl font-bold">Your To Do's</h2>
-          <br />
-          <div className="m-5"></div>
-          <div className="todos">
-            {todos.length === 0 && (
-              <div className="m-5">No Todos to Display</div>
-            )}
-            {todos.map((item) => {
-              return (
-                <div
-                  key={item.id}
-                  className="todo flex w-1/4 my-3 justify-between"
-                  id="output"
-                >
-                  {/* it is for checkbox and output*/}
-                  <div className="flex gap-5">
-                    <input
-                      type="checkbox"
-                      name={item.id}
-                      onChange={handleCheckbox}
-                      value={item.isCompleted}
-                    />
-                    <div
-                      className={item.isCompleted ? "line-through" : ""}
-                      id="todo_output"
-                    >
-                      {item.todo}
-                    </div>
-                  </div>
 
-                  {/* this is for edit and delete button */}
-                  <div className="ED_button">
-                    <div id="buttons">
-                      <button
-                        onClick={(e) => {
-                          handleEdit(e, item.id);
-                        }}
-                        className="bg-blue-500 hover:bg-blue-600 p-2 font-bold text-sm py-1 mx-1 text-white rounded-md "
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          handleDelete(e, item.id);
-                        }}
-                        className="bg-blue-500 hover:bg-blue-600 p-2 font-bold text-sm py-1 mx-1 text-white rounded-md"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
+          <div className="space-y-3">
+            {todos.length === 0 && (
+              <p className="text-neutral-500 text-center py-4">No tasks yet. Add one above!</p>
+            )}
+            {todos.map((item) => (
+              <div key={item.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    onChange={() => handleCheckbox(item.id)}
+                    checked={item.isCompleted}
+                    className="h-5 w-5 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <span className={`text-neutral-800 ${item.isCompleted ? "line-through text-neutral-400" : ""}`}>
+                    {item.todo}
+                  </span>
                 </div>
-              );
-            })}
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => handleEdit(e, item.id)}
+                    className="text-neutral-500 hover:text-secondary-500 transition"
+                  >
+                    <i className="fa-solid fa-pencil"></i>
+                  </button>
+                  <button
+                    onClick={(e) => handleDelete(e, item.id)}
+                    className="text-neutral-500 hover:text-red-500 transition"
+                  >
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
       </div>
-    </>
+    </section>
   );
 };
 
