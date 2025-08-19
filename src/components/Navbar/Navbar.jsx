@@ -1,11 +1,25 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import MobileNav from "./MobileNav/MobileNav";
+import Logo from "../UI/Logo";
 import "./Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -19,45 +33,106 @@ const Navbar = () => {
     }
   };
 
+  const isActive = (path) => location.pathname === path;
+
   const navLinks = (
-    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-neutral-100 rounded-lg bg-neutral-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent">
+    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0">
       <li>
-        <Link to="/" className="block py-2 px-3 text-neutral-700 hover:text-primary-600 rounded md:bg-transparent md:p-0" aria-current="page">Home</Link>
+        <Link 
+          to="/" 
+          className={`block py-2 px-3 rounded md:p-0 transition-colors duration-200 ${
+            isActive('/') 
+              ? 'text-indigo-600 font-semibold' 
+              : 'text-gray-700 hover:text-indigo-600'}`}
+          aria-current="page"
+        >
+          Home
+        </Link>
       </li>
       {localStorage.getItem("authToken") ? (
         <li>
-          <button onClick={handleLogout} className="block w-full text-left py-2 px-3 text-neutral-700 hover:text-primary-600 rounded md:bg-transparent md:p-0">Logout</button>
+          <button 
+            onClick={handleLogout} 
+            className="block w-full text-left py-2 px-3 text-gray-700 hover:text-indigo-600 rounded md:bg-transparent md:p-0 transition-colors duration-200"
+          >
+            Logout
+          </button>
         </li>
       ) : (
         <li>
-          <Link to="/login" className="block py-2 px-3 text-neutral-700 hover:text-primary-600 rounded md:bg-transparent md:p-0">Login</Link>
+          <Link 
+            to="/login" 
+            className={`block py-2 px-3 rounded md:p-0 transition-colors duration-200 ${
+              isActive('/login') 
+                ? 'text-indigo-600 font-semibold' 
+                : 'text-gray-700 hover:text-indigo-600'}`}
+          >
+            Login
+          </Link>
         </li>
       )}
     </ul>
   );
 
   return (
-    <nav className="bg-neutral-50/80 backdrop-blur-sm border-b border-neutral-200/80 fixed w-full z-20 top-0 start-0">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <i className="fa-solid fa-dumbbell text-2xl text-primary-600"></i>
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-neutral-800">VPeakFit</span>
-        </Link>
-        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <button onClick={handleContactClick} type="button" className="text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden sm:block">
-            Contact Us
-          </button>
-          <button onClick={() => setMenuOpen(!menuOpen)} data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-neutral-500 rounded-lg md:hidden hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-200" aria-controls="navbar-sticky" aria-expanded={menuOpen}>
-            <span className="sr-only">Open main menu</span>
-            <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
-            </svg>
-          </button>
-        </div>
-        <div className={`items-center justify-between ${menuOpen ? 'block' : 'hidden'} w-full md:flex md:w-auto md:order-1`} id="navbar-sticky">
-          {navLinks}
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-white/95 shadow-md backdrop-blur-sm' 
+        : 'bg-white/90 backdrop-blur-sm'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-20">
+          {/* Logo and mobile menu button */}
+          <div className="flex items-center">
+            <Link to="/" className="flex-shrink-0">
+              <Logo size="md" />
+            </Link>
+          </div>
+          
+          <div className="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+            {navLinks}
+            <button 
+              onClick={handleContactClick} 
+              className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+            >
+              Contact Us
+            </button>
+          </div>
+
+          <div className="-mr-2 flex items-center md:hidden">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              aria-expanded={menuOpen}
+            >
+              <span className="sr-only">Open main menu</span>
+              {!menuOpen ? (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              ) : (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg rounded-b-lg">
+            {navLinks}
+            <button 
+              onClick={handleContactClick}
+              className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+            >
+              Contact Us
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
