@@ -9,7 +9,6 @@ import Footer from "./components/Footer/Footer";
 import Services from "./components/Body/Services/Services";
 import Signup from "./components/Body/UserHandel/Signup";
 import Login from "./components/Body/UserHandel/Login";
-import Popup from "./components/Body/UserHandel/Popup";
 // import ForgotPassword from "./components/Navbar/ForgotPassword";
 import UserExercise from "./components/Body/UserExercise/UserExercise";
 import Diet from "./components/Body/Diet/Diet";
@@ -28,8 +27,6 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             {/* <Route path="/forgotpassword" element={<ForgotPassword />} /> */}
           </Routes>
-
-          <Popup />
 
           <Chatbot />
           <Services />
