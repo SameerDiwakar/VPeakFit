@@ -7,8 +7,15 @@ import "./Navbar.css";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setIsLoggedIn(!!token);
+  }, [location.pathname]); // Re-run when route changes
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +44,7 @@ const Navbar = () => {
 
   const navLinks = (
     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0">
-      <li>
+<li>
         <Link 
           to="/" 
           className={`block py-2 px-3 rounded md:p-0 transition-colors duration-200 ${
@@ -49,6 +56,19 @@ const Navbar = () => {
           Home
         </Link>
       </li>
+      {isLoggedIn && (
+        <li>
+          <Link 
+            to="/dashboard" 
+            className={`block py-2 px-3 rounded md:p-0 transition-colors duration-200 ${
+              isActive('/dashboard') 
+                ? 'text-indigo-600 font-semibold' 
+                : 'text-gray-700 hover:text-indigo-600'}`}
+          >
+            Dashboard
+          </Link>
+        </li>
+      )}
       {localStorage.getItem("authToken") ? (
         <li>
           <button 

@@ -4,6 +4,7 @@ import Carousel from "../Body/Carousel/Carousel";
 import Hero from "../Body/Hero/Hero";
 import Features from "../Body/Features/Features";
 import Panel from "../Body/Panel/Panel";
+import Services from "../Body/Services/Services";
 
 const HomePage = () => {
   // Add smooth scroll behavior for anchor links
@@ -30,6 +31,9 @@ const HomePage = () => {
           <Carousel />
         </div>
       </section>
+
+      {/* Services Section */}
+      <Services />
 
       {/* User Testimonials */}
       <section className="py-16 bg-white">

@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import HomePage from "./components/Navbar/HomePage";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import UserInjuryInput from "./components/Body/UserInjuryInput/UserInjuryInput";
 import Footer from "./components/Footer/Footer";
-import Services from "./components/Body/Services/Services";
 import Signup from "./components/Body/UserHandel/Signup";
 import Login from "./components/Body/UserHandel/Login";
 import UserExercise from "./components/Body/UserExercise/UserExercise";
@@ -26,11 +26,22 @@ function App() {
           <main className="max-w-screen-xl mx-auto px-4 md:px-6">
             <div className="space-y-10 md:space-y-16 py-6 md:py-10">
               <HomePage />
-              <Services />
               <Chatbot />
             </div>
           </main>
         } />
+        
+        {/* Dashboard Route - Protected */}
+        <Route 
+          path="/dashboard" 
+          element={
+            localStorage.getItem('authToken') ? (
+              <Dashboard />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
         
         {/* Auth Routes */}
         <Route path="/login" element={<Login />} />
